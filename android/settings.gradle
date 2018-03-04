@@ -1,0 +1,3 @@
+rootProject.name = 'h217-client'
+
+include ':app'
