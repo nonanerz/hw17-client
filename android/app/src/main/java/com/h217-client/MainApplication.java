@@ -1,4 +1,4 @@
-package com.h217-client;
+package com.chatapp;
 
 import android.app.Application;
 
