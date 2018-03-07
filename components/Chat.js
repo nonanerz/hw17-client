@@ -1,7 +1,7 @@
 import React from 'react';
 import io from 'socket.io-client';
 import axios from 'axios'
-import { StyleSheet, FlatList, View, Button, TextInput, Text } from 'react-native';
+import { StyleSheet, FlatList, View, Button, TextInput, Text, Vibration } from 'react-native';
 
 export default class Chat extends React.Component {
     constructor(props) {
@@ -24,6 +24,7 @@ export default class Chat extends React.Component {
 
         this.socket = socket = io('https://limitless-gorge-54663.herokuapp.com', { jsonp: false, transports: ['websocket'] }) //<--- your server here
         socket.on('chat message', (msg) => {
+            Vibration.vibrate([500, 500])
             let messages = this.state.messages
             console.log(msg)
             messages.unshift(msg)
