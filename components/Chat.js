@@ -8,10 +8,10 @@ export default class Chat extends React.Component {
         super(props);
         this.state = {
             text: '',
-            messages: []
-        }
-        ;
-        this.onSubmit = this.onSubmit.bind(this)
+            messages: [],
+            name: this.props.user
+        };
+        this.onSubmit = this.onSubmit.bind(this);
     }
 
     componentDidMount() {
@@ -25,7 +25,6 @@ export default class Chat extends React.Component {
         this.socket = socket = io('https://limitless-gorge-54663.herokuapp.com', { jsonp: false, transports: ['websocket'] }) //<--- your server here
         socket.on('chat message', (msg) => {
             let messages = this.state.messages
-            console.log(msg)
             messages.unshift(msg)
             this.setState({messages})
         });
@@ -35,7 +34,7 @@ export default class Chat extends React.Component {
         if (this.state.text.trim().length > 0) {
             let msg = {
                 text: this.state.text,
-                author: 'anonymous',
+                author: this.state.name,
                 createdAt: new Date
             }
             this.socket.emit('chat message', msg);

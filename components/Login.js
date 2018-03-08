@@ -28,7 +28,7 @@ export default class Login extends React.Component {
         })
             .then(function (response) {
                 if (response.data.user) {
-                    Actions.Chat({});
+                    Actions.Chat({user: response.data.user.name});
                 } else {
                     localThis.setState({
                         message: response.data['message']
