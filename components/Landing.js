@@ -12,14 +12,12 @@ import RegistrationForm from "./RegistrationForm"
 
 
 export default class Landing extends Component {
-    constructor(props) {
-        super(props)
-        this.loginWithFacebook = this.loginWithFacebook.bind(this)
-    }
+
     componentDidMount() {
         Linking.addEventListener('url', this.props.handleOpenURL)
         Linking.getInitialURL().then((url) => {
-            if (url) {
+            console.log(this.props.logout)
+            if (url && this.props.logout === false) {
                 this.props.handleOpenURL({ url })
             }
         })
@@ -29,8 +27,9 @@ export default class Landing extends Component {
         Linking.removeEventListener('url', this.props.handleOpenURL)
     }
 
-
-    loginWithFacebook = () => Linking.openURL('https://limitless-gorge-54663.herokuapp.com/auth/facebook/callback')
+    loginWithFacebook () {
+        Linking.openURL('https://limitless-gorge-54663.herokuapp.com/auth/facebook/callback')
+    }
 
     render() {
         return (

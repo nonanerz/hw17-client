@@ -8,10 +8,11 @@ export default class App extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-                email: null,
-                name: null,
-                password: null,
-                user: null
+            email: null,
+            name: null,
+            password: null,
+            user: null,
+            logout: true
         }
         this.onLogin = this.onLogin.bind(this)
         this.onRegistration = this.onRegistration.bind(this)
@@ -25,7 +26,7 @@ export default class App extends React.Component {
 
     componentWillMount () {
         AsyncStorage.getItem('user').then((value) => {
-            this.setState({'user': JSON.parse(value)})
+            this.setState({'user': JSON.parse(value), logout: false})
         }).done()
     }
 
@@ -48,7 +49,7 @@ export default class App extends React.Component {
                     if (response.status !== 200) {
                         Alert.alert('Bad request.')
                     } else {
-                        this.saveData(response.data.user)
+                        this.saveData(response.data.user, logout: false)
                     }
                 })
         }
@@ -67,7 +68,7 @@ export default class App extends React.Component {
             })
                 .then(response => {
                     console.log(response)
-                    this.setState({user: response.data.user})
+                    this.setState({user: response.data.user, logout: false})
                 })
                 .catch(e => {
                     console.log(e)
@@ -94,11 +95,11 @@ export default class App extends React.Component {
         this.setState({
             user: JSON.parse(decodeURI(user_string))
         })
-        console.log(this.state.user)
+        console.log(this.state.user, 11111)
     }
 
     onLogout () {
-        this.setState({user: null})
+        this.setState({user: null, logout: true})
         AsyncStorage.removeItem('user')
     }
 
@@ -109,6 +110,7 @@ export default class App extends React.Component {
               this.state.user ?
                   <Chat user={this.state.user} onLogout={this.onLogout}/> :
                   <Landing
+                      logout={this.state.logout}
                       onLogin={this.onLogin}
                       onRegistration={this.onRegistration}
                       onEmailChange={this.onEmailChange}
