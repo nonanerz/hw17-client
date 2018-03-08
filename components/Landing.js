@@ -16,8 +16,7 @@ export default class Landing extends Component {
     componentDidMount() {
         Linking.addEventListener('url', this.props.handleOpenURL)
         Linking.getInitialURL().then((url) => {
-            console.log(this.props.logout)
-            if (url && this.props.logout === false) {
+            if (url && this.props.logout === true) {
                 this.props.handleOpenURL({ url })
             }
         })

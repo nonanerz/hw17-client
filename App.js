@@ -49,7 +49,7 @@ export default class App extends React.Component {
                     if (response.status !== 200) {
                         Alert.alert('Bad request.')
                     } else {
-                        this.saveData(response.data.user, logout: false)
+                        this.saveData(response.data.user)
                     }
                 })
         }
@@ -93,13 +93,14 @@ export default class App extends React.Component {
     handleOpenURL = ({ url }) => {
         const [, user_string] = url.match(/user=([^#]+)/)
         this.setState({
-            user: JSON.parse(decodeURI(user_string))
+            user: JSON.parse(decodeURI(user_string)),
+            logout: !this.state.logout
         })
         console.log(this.state.user, 11111)
     }
 
     onLogout () {
-        this.setState({user: null, logout: true})
+        this.setState({user: null, logout: false})
         AsyncStorage.removeItem('user')
     }
 
