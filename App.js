@@ -94,6 +94,7 @@ export default class App extends React.Component {
         this.setState({
             user: JSON.parse(decodeURI(user_string))
         })
+        console.log(this.state.user)
     }
 
     onLogout () {
