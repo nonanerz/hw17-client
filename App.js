@@ -25,13 +25,13 @@ export default class App extends React.Component {
 
     componentWillMount () {
         AsyncStorage.getItem('user').then((value) => {
-            this.setState({'user': JSON.parse(value)});
+            this.setState({'user': JSON.parse(value)})
         }).done()
     }
 
     saveData (value) {
-        AsyncStorage.setItem('user', JSON.stringify(value));
-        this.setState({user: value});
+        AsyncStorage.setItem('user', JSON.stringify(value))
+        this.setState({user: value})
     }
 
     onLogin() {
@@ -53,7 +53,6 @@ export default class App extends React.Component {
                 })
         }
     }
-//bulavaeduard@gmail.com
     onRegistration() {
         if (!this.state.email || !this.state.password || !this.state.name) {
             Alert.alert('Please fill out required fields.')
