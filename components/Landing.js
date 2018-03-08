@@ -1,60 +1,94 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import {
     Linking,
     View,
-    Button,
-    Text
-} from 'react-native';
+    KeyboardAvoidingView,
+    Text,
+    StyleSheet,
+    TouchableOpacity,
+} from 'react-native'
+import LoginForm from "./LoginForm"
+import RegistrationForm from "./RegistrationForm"
+
 
 export default class Landing extends Component {
     constructor(props) {
-        super(props);
-        this.state = {
-            user: undefined
-        }
-
-        this.handleOpenURL = this.handleOpenURL.bind(this)
+        super(props)
         this.loginWithFacebook = this.loginWithFacebook.bind(this)
     }
     componentDidMount() {
-        Linking.addEventListener('url', this.handleOpenURL);
+        Linking.addEventListener('url', this.props.handleOpenURL)
         Linking.getInitialURL().then((url) => {
             if (url) {
-                this.handleOpenURL({ url });
+                this.props.handleOpenURL({ url })
             }
-        });
-    };
+        })
+    }
 
     componentWillUnmount() {
-        Linking.removeEventListener('url', this.handleOpenURL);
-    };
+        Linking.removeEventListener('url', this.props.handleOpenURL)
+    }
 
-    handleOpenURL = ({ url }) => {
-        const [, user_string] = url.match(/user=([^#]+)/);
-        this.setState({
-            user: JSON.parse(decodeURI(user_string))
-        });
-    };
 
-    loginWithFacebook = () => Linking.openURL('https://limitless-gorge-54663.herokuapp.com/auth/facebook/callback');
+    loginWithFacebook = () => Linking.openURL('https://limitless-gorge-54663.herokuapp.com/auth/facebook/callback')
 
     render() {
-        const user = this.state.user;
         return (
-            <View>
-                {user
-                    ? <Text>Welcome {user.name}!</Text> :
+            <KeyboardAvoidingView behavior="padding" style={styles.container}>
 
-                    <Button
-                        name="facebook"
-                        title="Login"
-                        backgroundColor="#3b5998"
-                        onPress={this.loginWithFacebook}
-                    >
-                        Login with Facebook
-                    </Button>
-                }
-            </View>
-        );
+                <View style={styles.loginContainer}>
+                    <Text  style={styles.headerText}>ChatApp</Text>
+                </View>
+                <View style={styles.formContainer}>
+                    <LoginForm
+                        onLogin={this.props.onLogin}
+                        onEmailChange={this.props.onEmailChange}
+                        onPasswordChange={this.props.onPasswordChange}
+                    />
+                    <RegistrationForm
+                        onRegistration={this.props.onRegistration}
+                        onEmailChange={this.props.onEmailChange}
+                        onPasswordChange={this.props.onPasswordChange}
+                        onNameChange={this.props.onNameChange}
+                    />
+                    <Text  style={styles.buttonText}>OR</Text>
+                    <TouchableOpacity style={styles.buttonContainer} onPress={this.loginWithFacebook}>
+                        <Text  style={styles.buttonText}>Login with Facebook</Text>
+                    </TouchableOpacity>
+
+                </View>
+            </KeyboardAvoidingView>
+        )
     }
 }
+const styles = StyleSheet.create({
+    loginContainer:{
+        alignItems: 'center',
+        flexGrow: 1,
+        justifyContent: 'center'
+    },
+    title:{
+        color: "#FFF",
+        marginTop: 120,
+        width: 180,
+        textAlign: 'center',
+        opacity: 0.9
+    },
+    buttonText:{
+        color: '#fff',
+        textAlign: 'center',
+        fontWeight: '700',
+    },
+    buttonContainer:{
+        backgroundColor: '#2980b6',
+        paddingVertical: 15,
+        margin: 20
+    },
+    headerText:{
+        color: '#fff',
+        textAlign: 'center',
+        opacity: 0.9,
+        width: 380,
+        fontSize: 30
+    },
+})

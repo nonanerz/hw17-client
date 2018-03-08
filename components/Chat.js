@@ -1,7 +1,7 @@
 import React from 'react';
 import io from 'socket.io-client';
 import axios from 'axios'
-import { StyleSheet, FlatList, View, Button, TextInput, Text, Vibration } from 'react-native';
+import { StyleSheet, FlatList, View, TouchableOpacity, TextInput, Text, Vibration } from 'react-native';
 
 export default class Chat extends React.Component {
     constructor(props) {
@@ -24,9 +24,8 @@ export default class Chat extends React.Component {
 
         this.socket = socket = io('https://limitless-gorge-54663.herokuapp.com', { jsonp: false, transports: ['websocket'] }) //<--- your server here
         socket.on('chat message', (msg) => {
-            Vibration.vibrate([500, 500])
+            // Vibration.vibrate([500, 500])
             let messages = this.state.messages
-            console.log(msg)
             messages.unshift(msg)
             this.setState({messages})
         });
@@ -36,7 +35,7 @@ export default class Chat extends React.Component {
         if (this.state.text.trim().length > 0) {
             let msg = {
                 text: this.state.text,
-                author: 'anonymous',
+                author: this.props.user.name,
                 createdAt: new Date
             }
             this.socket.emit('chat message', msg);
@@ -47,24 +46,25 @@ export default class Chat extends React.Component {
     render() {
         return (
             <View style={{padding: 10}}>
+                <TouchableOpacity onPress={this.props.onLogout}>
+                    <Text style={styles.logout}>LOGOUT</Text>
+                </TouchableOpacity>
                 <TextInput
-                    style={{height: 40}}
+                    style={styles.input}
                     placeholder="Type your message here!"
                     value={this.state.text}
                     onChangeText={(text) => this.setState({text})}
                 />
-                <Button
-                    onPress={this.onSubmit}
-                    title="Submit"
-                    color="#841584"
-                />
+                <TouchableOpacity style={styles.buttonContainer} onPress={this.onSubmit}>
+                    <Text  style={styles.buttonText}>SEND</Text>
+                </TouchableOpacity>
                 <FlatList
                     keyExtractor={(item) => item._id}
                     data={this.state.messages}
                     extraData={this.state}
                     renderItem={({item}) =>
                     <View>
-                        <Text style={styles.item}>{item.text}</Text>
+                        <Text style={styles.input}>{item.text}</Text>
                         <Text style={styles.author}>{item.author} at {item.createdAt}</Text>
                     </View>
                     }
@@ -73,17 +73,39 @@ export default class Chat extends React.Component {
         );
     }
 }
+
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        paddingTop: 22
+        padding: 20
     },
-    item: {
-        padding: 3,
-        fontSize: 18,
+    input:{
+        height: 40,
+        backgroundColor: 'rgba(225,225,225,0.2)',
+        padding: 10,
+        color: '#fff'
     },
-    author: {
-        fontSize: 10,
-        height: 30,
+    buttonContainer:{
+        backgroundColor: '#2980b6',
+        paddingVertical: 15,
+        margin: 10
+    },
+    buttonText:{
+        color: '#fff',
+        textAlign: 'center',
+    },
+    author:{
+        color: '#fff',
+        fontSize: 12,
+        textAlign: 'right',
+    },
+    button:{
+        backgroundColor:  '#2980b6',
+        color: '#fff'
+    },
+    logout: {
+        height: 40,
+        color: '#fff',
+        textAlign: 'right'
     }
+
 })
