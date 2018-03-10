@@ -1,8 +1,8 @@
 import React from 'react'
 import {Alert, StyleSheet, View, AsyncStorage} from 'react-native'
 import Landing from "./components/Landing"
-import axios from "axios/index"
 import Chat from "./components/Chat"
+import Api from "./services/api"
 
 export default class App extends React.Component {
     constructor(props) {
@@ -39,42 +39,25 @@ export default class App extends React.Component {
         if (!this.state.email || !this.state.password) {
             Alert.alert('Please fill out required fields.')
         } else {
-            axios.post(`https://limitless-gorge-54663.herokuapp.com/api/login`, {
+            Api.login({
                 user: {
                     email: this.state.email,
                     password: this.state.password
                 }
-            })
-                .then(response => {
-                    if (response.status !== 200) {
-                        Alert.alert('Bad request.')
-                    } else {
-                        this.saveData(response.data.user)
-                    }
-                })
+            }).then(user => this.saveData(user))
         }
     }
     onRegistration() {
         if (!this.state.email || !this.state.password || !this.state.name) {
             Alert.alert('Please fill out required fields.')
-            console.log(this.state)
         } else {
-            axios.post(`https://limitless-gorge-54663.herokuapp.com/api/users`, {
+            Api.registration({
                 user: {
                     email: this.state.email,
                     name: this.state.name,
                     password: this.state.password
                 }
             })
-                .then(response => {
-                    console.log(response)
-                    this.setState({user: response.data.user, logout: false})
-                })
-                .catch(e => {
-                    console.log(e)
-
-                    Alert.alert(e.message)
-                })
         }
     }
 
@@ -96,7 +79,6 @@ export default class App extends React.Component {
             user: JSON.parse(decodeURI(user_string)),
             logout: !this.state.logout
         })
-        console.log(this.state.user, 11111)
     }
 
     onLogout () {
